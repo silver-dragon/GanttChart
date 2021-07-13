@@ -6,18 +6,20 @@ This is a highly-customizable Gantt Chart control for WinForms
 
 ### How to use:
 
-```csharp
-Chart ganttChart = new Chart(); //Can also be added via the designer
-ganttChart.StartDate = DateTime.Today;
-ganttChart.EndDate = DateTime.Today.AddDays(5);
-
-this.Controls.Add(ganttChart); //Add the chart to the form
-ganttChart.Dock = DockStyle.Fill; //Expand the chart to fill the form
-
-Row row = new Row("Row 1");
-row.TimeBlocks.Add(new TimeBlock("Shift 1", DateTime.Today.AddHours(8), DateTime.Today.AddHours(17)) { Color = Color.Red });
-ganttChart.Rows.Add(row);
-ganttChart.UpdateView();
+```vb
+Public Sub InitChart()
+    Dim ganttChart As Chart = New Chart()
+    ganttChart.StartDate = DateTime.Today
+    ganttChart.EndDate = DateTime.Today.AddDays(5)
+    Me.Controls.Add(ganttChart)
+    ganttChart.Dock = DockStyle.Fill
+    Dim row As Row = New Row("Row 1")
+    row.TimeBlocks.Add(New TimeBlock("Shift 1", DateTime.Today.AddHours(8), DateTime.Today.AddHours(17)) With {
+        .Color = Color.Red
+    })
+    ganttChart.Rows.Add(row)
+    ganttChart.UpdateView()
+End Sub
 ```
 
 ### Features:

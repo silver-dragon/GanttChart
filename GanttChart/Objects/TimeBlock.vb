@@ -34,5 +34,6 @@ Namespace GanttChart
         Public Overridable Property Clickable As Boolean
         Public Overridable Property Rect As Rectangle
         Public Overridable Property IsVisible As Boolean
+        Public Overridable Property Tag As Object
     End Class
 End Namespace

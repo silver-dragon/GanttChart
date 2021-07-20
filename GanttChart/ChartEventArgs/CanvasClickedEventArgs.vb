@@ -1,6 +1,7 @@
 ﻿Imports System.Drawing
 
 Namespace GanttChart
+    <System.Serializable>
     Public Class CanvasClickedEventArgs
         Public Property ClickedLocation As Date?
         Public Property RelatedRow As Row

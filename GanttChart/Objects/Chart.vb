@@ -7,6 +7,7 @@ Imports GanttChart.Enums
 Imports System.ComponentModel
 
 Namespace GanttChart
+    <Serializable>
     Public Class Chart
         Inherits UserControl
 #Region "Initializations"

@@ -1,7 +1,9 @@
-﻿Imports System.Collections.Generic
+﻿Imports System
+Imports System.Collections.Generic
 Imports System.Drawing
 
 Namespace GanttChart
+    <Serializable>
     Public Class Row
         Public Sub New()
             IsVisible = True

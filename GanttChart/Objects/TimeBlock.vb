@@ -1,6 +1,8 @@
-﻿Imports System.Drawing
+﻿Imports System
+Imports System.Drawing
 
 Namespace GanttChart
+    <Serializable>
     Public Class TimeBlock
         Public Sub New()
             Hatch = False

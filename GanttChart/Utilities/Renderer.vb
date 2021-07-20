@@ -7,6 +7,7 @@ Imports System.Windows.Forms
 Imports GanttChart.Enums
 
 Namespace GanttChart
+    <Serializable>
     Public Class Renderer
 #Region "Private Properties"
         Private graphics As Graphics

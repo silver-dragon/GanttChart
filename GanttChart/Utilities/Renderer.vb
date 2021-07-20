@@ -251,8 +251,8 @@ Namespace GanttChart
             Dim outlinePen As Pen = New Pen(Color.Black, 1)
             Dim canvasRect As Rectangle = New Rectangle(startX, startY, endX - startX, endY - startY)
             graphics.DrawRectangle(outlinePen, startX, startY, canvasRect.Width - outlinePen.Width, canvasRect.Height - outlinePen.Width)
-            If VerticalGridLinesVisible Then DrawVerticalGridLines(startX, startY, endX, endY)
-            If HorizontalGridLinesVisible Then DrawHorizontalGridLines(endX)
+            If VerticalGridLinesVisible Then DrawVerticalGridLines(startX, startY, endX, endY, GridLinesColor)
+            If HorizontalGridLinesVisible Then DrawHorizontalGridLines(endX, GridLinesColor)
 
             'Adjust canvas for return (so that anything drawn to the canvas is inside the "outline")
             canvasRect.X += CInt(outlinePen.Width)
@@ -389,29 +389,28 @@ Namespace GanttChart
             End If
         End Function
 
-        Private Sub DrawVerticalGridLines(startX As Integer, startY As Integer, endX As Integer, endY As Integer)
+        Private Sub DrawVerticalGridLines(startX As Integer, startY As Integer, endX As Integer, endY As Integer, lineColor As Color)
             For Each time In TimeXLocations
                 Dim p1 As Point = New Point(time.Item2, startY)
                 Dim p2 As Point = New Point(time.Item2, endY - 1)
-                graphics.DrawLine(New Pen(Color.Black), p1, p2)
+                graphics.DrawLine(New Pen(lineColor), p1, p2)
             Next
         End Sub
 
-        Private Sub DrawHorizontalGridLines(endX As Integer)
+        Private Sub DrawHorizontalGridLines(endX As Integer, lineColor As Color)
             For Each row In Rows
                 'Draw a line from the bottom of each row rect (except for the last one)
                 If Rows.IndexOf(row) <> Rows.Count - 1 Then
                     Dim rowRect = row.Rect
                     Dim p1 As Point = New Point(rowRect.Right, rowRect.Bottom)
                     Dim p2 As Point = New Point(endX, rowRect.Bottom)
-                    graphics.DrawLine(New Pen(Color.Black), p1, p2)
+                    graphics.DrawLine(New Pen(lineColor), p1, p2)
                 End If
             Next
         End Sub
 
         Private Function GetContrastingTextColor(backgroundColor As Color) As Color
             Dim avg As Double = Math.Round((CInt(backgroundColor.R) + CInt(backgroundColor.G) + CInt(backgroundColor.B)) / 3)
-            'Dim avg As Double = (255 + 255 + 0) \ 3
 
             If avg > 255 \ 2 Then
                 Return Color.Black

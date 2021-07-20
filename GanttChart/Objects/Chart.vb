@@ -617,6 +617,19 @@ Namespace GanttChart
                 renderer.Holidays = value
             End Set
         End Property
+        ''' <summary>
+        ''' <para>Controls holidays for the form. On each holiday, a cross hatch is drawn through all rows and no timeblocks are shown.</para>
+        ''' <para>Keys are DateTime and Values are string (the name of the Holiday)</para>
+        ''' </summary>
+        <Category("Gantt Chart")>
+        Public Property GridLinesColor As Color
+            Get
+                Return renderer.GridLinesColor
+            End Get
+            Set(value As Color)
+                renderer.GridLinesColor = value
+            End Set
+        End Property
 #End Region
     End Class
 End Namespace

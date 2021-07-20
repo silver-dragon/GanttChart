@@ -61,7 +61,7 @@ Namespace GanttChart
 
             'Dynamically adjust height
             If Rows.Count > 0 AndAlso Rows.All(Function(p) p.Rect <> Nothing) Then
-                Dim highestYValue As Integer = Enumerable.Select(Of Row, Global.System.Int32)(Rows, CType(Function(p) CInt(p.Rect.Bottom), Func(Of Row, Integer))).Max()
+                Dim highestYValue As Integer = Enumerable.Select(Rows, Function(p) p.Rect.Bottom).Max()
                 autoScrollSize.Height = highestYValue + 1
             Else
                 autoScrollSize.Height = size.Height
@@ -86,6 +86,7 @@ Namespace GanttChart
             RowIconLocation = Corner.SW
             HorizontalGridLinesVisible = False
             VerticalGridLinesVisible = True
+            GridLinesColor = Color.Black
             ShowNowIndicator = False
             NowIndicatorHourOffset = 0
             MinTimeIntervalWidth = 0
@@ -173,7 +174,7 @@ Namespace GanttChart
             If Rows.Count = 0 Then Return New Rectangle(startX, startY, 0, 0)
 
             'Increase width if it will not fit the largest string
-            Dim maxStringWidth As Integer = Enumerable.Select(Of Row, Global.System.Int32)(Rows, CType(Function(p) CInt(CInt(Math.Round(CDbl(graphics.MeasureString(CStr(p.Text), CType(font, Font)).Width)))), Func(Of Row, Integer))).Max()
+            Dim maxStringWidth As Integer = Enumerable.Select(Of Row, Integer)(Rows, Function(p) Math.Round(graphics.MeasureString(p.Text, font).Width)).Max()
             If maxStringWidth > headerWidth Then headerWidth = maxStringWidth + 10 '10 for a "margin"
             Dim x = startX
             Dim y = startY
@@ -353,9 +354,9 @@ Namespace GanttChart
 
         Private Function AreHoursValid() As Boolean
             If StartHourInDay < 0 OrElse StartHourInDay > 23 Then
-                Throw New Exception("StartHourInDay is not valid")
+                Throw New InvalidDateTime("StartHourInDay is not valid")
             ElseIf EndHourInDay < 0 OrElse EndHourInDay > 24 OrElse EndHourInDay <= StartHourInDay Then
-                Throw New Exception("EndHourInDay is not valid")
+                Throw New InvalidDateTime("EndHourInDay is not valid")
             Else
                 Return True
             End If
@@ -363,7 +364,7 @@ Namespace GanttChart
 
         Private Function AreDatesValid() As Boolean
             If EndDate <= StartDate Then
-                Throw New Exception("EndDate cannot be before or the same as StartDate")
+                Throw New InvalidDateTime("EndDate cannot be before or the same as StartDate")
             Else
                 Return True
             End If
@@ -455,10 +456,15 @@ Namespace GanttChart
         End Sub
 
         Private Sub DrawTextLeft(rect As Rectangle, text As String, Optional textColor As Color? = Nothing)
-            Dim stringLengthPixels As Integer = Math.Round(graphics.MeasureString(text, font).Width)
+            'TODO: System.DivideByZeroException Handle this
+            Try
+                Dim stringLengthPixels As Integer = Math.Round(graphics.MeasureString(text, font).Width)
+            Catch ex As DivideByZeroException
+                Dim stringLengthPixels As Integer = 1
+            End Try
 
             If stringLengthPixels > rect.Width - 3 Then '"3" leaves room for margin on both sides
-                Dim convertedLength As Integer = (rect.Width - 5) / stringLengthPixels * text.Length
+                Dim convertedLength As Integer = (rect.Width - 5) \ stringLengthPixels * text.Length
 
                 If convertedLength < 0 Then
                     text = ""
@@ -467,7 +473,7 @@ Namespace GanttChart
                 End If
             End If
 
-            Dim center As Point = New Point(rect.X + 3, rect.Y + rect.Height / 2)
+            Dim center As Point = New Point(rect.X + 3, rect.Y + rect.Height \ 2)
 
             If textColor.HasValue Then
                 graphics.DrawString(text, font, New SolidBrush(textColor.Value), center.X, center.Y, alignVertCenter)
@@ -528,9 +534,18 @@ Namespace GanttChart
         Public Property RowIconLocation As Corner
         Public Property HorizontalGridLinesVisible As Boolean
         Public Property VerticalGridLinesVisible As Boolean
+        Public Property GridLinesColor As Color
         Public Property ShowNowIndicator As Boolean
         Public Property NowIndicatorHourOffset As Integer
         Public Property MinTimeIntervalWidth As Integer
 #End Region
     End Class
+    Class InvalidDateTime
+        Inherits Exception
+
+        Public Sub New(message As String)
+            MyBase.New(message)
+        End Sub
+    End Class
+
 End Namespace

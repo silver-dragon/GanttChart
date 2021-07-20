@@ -196,8 +196,12 @@ Namespace GanttChart
 
             'Don't paint if in design mode
             If IsDesignerHosted OrElse DesignMode Then Return
-            AutoScrollMinSize = renderer.CalculateAutoScrollSize(AutoScrollMinSize, Size, VerticalScroll)
-            renderer.Render(e.Graphics, AutoScrollPosition, AutoScrollMinSize, Font)
+            Try
+                AutoScrollMinSize = renderer.CalculateAutoScrollSize(AutoScrollMinSize, Size, VerticalScroll)
+                renderer.Render(e.Graphics, AutoScrollPosition, AutoScrollMinSize, Font)
+            Catch ex As DivideByZeroException
+                Return
+            End Try
         End Sub
 
         'Check for "DesignMode" if inside a UserControl
